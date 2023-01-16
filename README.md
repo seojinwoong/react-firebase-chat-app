@@ -1,15 +1,18 @@
 ## 2023-01-17 ("리덕스 기본구조" 까지 들음)
 
 - react-router-dom 6버전 기준에서는 src/index.js 에서 BrowserRouter를 App 컴포넌트 바깥으로 감싸준다.
+- 또한 그 Router 바깥을 감싸는 Provider도 있다 (redux)
 
 ```js
 import {
   BrowserRouter as Router,
 } from "react-router-dom";
 
-<Router >
-    <App />
-</Router>
+<Provider>
+  <Router >
+      <App />
+  </Router>
+</Provider>
 ```
 
 - redux는 총 4개의 라이브러리를 install 해준다.
