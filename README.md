@@ -65,3 +65,9 @@ promise나 함수를 처리하기 위해서 추가적으로 redux 라이브러�
 
 ### react-hook-form
 react-hook-form은 form의 유효성 검사를 좀 더 손쉽게 진행할 수 있는 라이브러리이다.
+```js
+  npm install react-hook-form --save
+```
+사용법
+
+![study_1](/study/study_1.png)
