@@ -60,3 +60,8 @@ promise나 함수를 처리하기 위해서 추가적으로 redux 라이브러�
   2) src/index.js 에다가 .css 파일을 import 해준다.
   3) react-icons를 다운 해준다. => npm install react-icons
 ```
+
+## 2023-01-26 ("리덕스 기본구조" 까지 들음)
+
+### react-hook-form
+react-hook-form은 form의 유효성 검사를 좀 더 손쉽게 진행할 수 있는 라이브러리이다.
