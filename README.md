@@ -71,3 +71,16 @@ react-hook-form은 form의 유효성 검사를 좀 더 손쉽게 진행할 수 �
 사용법
 
 ![study_1](/study/study_1.png)
+
+## 2023-01-28 ("firebase에서 이메일로 유저 생성시 생기는 문제점" 까지 들음)
+
+react-hook-form을 사용할 시에는
+handleSubmit이라는 메서드를 제공해준다. 이것을 이용하자.
+```js
+  const { register, watch, formState: {errors}, handleSubmit } = useForm();
+  <form onSubmit={handleSubmit(onSubmit)}>
+```
+
+submit을 하면 email, password로 계정을 생성하기
+순서 1) getAuth()로 auth를 생성해준다.
+순서 2) createUserWithEmailAndPassword 메서드를 사용해 인증된 계정을 생성해준다.
