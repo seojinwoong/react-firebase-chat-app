@@ -16,7 +16,8 @@ const RegisterPage = () => {
   const onSubmit = async (data) => {
     try {
       const auth = getAuth();
-      const createdUser = createUserWithEmailAndPassword(auth, data.email, data.password);
+      const createdUser = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      console.log('생성된 계정 출력하기', createdUser);
 
     } catch (error) {
       setErrorFromSubmit(error.message);
