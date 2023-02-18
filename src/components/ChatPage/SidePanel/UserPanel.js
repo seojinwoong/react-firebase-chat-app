@@ -1,11 +1,41 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { BsFillChatFill } from 'react-icons/bs';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Image from 'react-bootstrap/Image';
 import { useSelector } from 'react-redux';
+import { getAuth, signOut } from 'firebase/auth';
+import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 
 const UserPanel = () => {
   const user = useSelector(state => state.user.currentUser);
+  const imgUploadBtn = useRef();
+
+  const handleLogout = () => {
+    const auth = getAuth();
+    signOut(auth).then(() => {
+
+    }).catch(error => {
+
+    });
+  }
+  const handleImgBtnClick = () => {
+    imgUploadBtn.current.click();
+  }
+
+  const handleUploadImg = async (e) => {
+    const file = e.target.files[0];
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    const metadata = { contentType: file.type };
+    const storage = getStorage();
+
+    try {
+      let uploadTask = uploadBytesResumable(ref(storage, `user_image/${user.uid}`), file, metadata); 
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
 
   return (
     <div>
@@ -24,10 +54,12 @@ const UserPanel = () => {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            <Dropdown.Item>프로필 사진 변경</Dropdown.Item>
-            <Dropdown.Item>로그아웃</Dropdown.Item>
+            <Dropdown.Item onClick={handleImgBtnClick}>프로필 사진 변경</Dropdown.Item>
+            <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
+        <input type="file" onChange={handleUploadImg} ref={imgUploadBtn} style={{ display: 'none' }} accept="image/jpeg, image/png"/>
+
       </div>
     </div>
   )
