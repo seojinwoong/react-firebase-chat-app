@@ -2,13 +2,15 @@ import React, { useRef } from 'react';
 import { BsFillChatFill } from 'react-icons/bs';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Image from 'react-bootstrap/Image';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { getAuth, signOut } from 'firebase/auth';
 import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import {setPhotoURL} from '../../../redux/actions/user_action';
 
 const UserPanel = () => {
   const user = useSelector(state => state.user.currentUser);
   const imgUploadBtn = useRef();
+  const dispatch = useDispatch();
 
   const handleLogout = () => {
     const auth = getAuth();
@@ -32,6 +34,21 @@ const UserPanel = () => {
 
     try {
       let uploadTask = uploadBytesResumable(ref(storage, `user_image/${user.uid}`), file, metadata); 
+      let downloadURL = await uploadTask.ref.getDownloadURL();
+
+      // 프로필 이미지 수정
+      await firebase.auth().currentUser.updateProfile({
+        photoURL: downloadURL
+      });
+      
+      dispatch(setPhotoURL(downloadURL));
+
+      // 데이터베이스 유저 이미지 수정
+      await firebase.database().ref('users')
+        .child(user.uid)
+        .update({ image: downloadURL })
+        
+
     } catch (error) {
       console.error(error.message);
     }
