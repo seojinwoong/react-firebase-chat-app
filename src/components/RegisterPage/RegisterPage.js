@@ -1,7 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { getDatabase, ref, set } from 'firebase/database';
+import md5 from 'md5';
 
 let timer;
 
@@ -9,19 +11,34 @@ const RegisterPage = () => {
 
   const { register, watch, formState: { errors }, handleSubmit } = useForm();
   const [errorFromSubmit, setErrorFromSubmit] = useState('');
+  const [signUpLoading, setSignUpLoading] = useState(false);
 
   const password = useRef();
   password.current = watch('password');
 
   const onSubmit = async (data) => {
     try {
-      const auth = getAuth();
-      const createdUser = await createUserWithEmailAndPassword(auth, data.email, data.password);
-      console.log('생성된 계정 출력하기', createdUser);
+      setSignUpLoading(true);
 
+      const auth = getAuth();
+      let createdUser = await createUserWithEmailAndPassword(auth, data.email, data.password)
+
+      await updateProfile(auth.currentUser, {
+        displayName: data.name,
+        photoURL: `http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`
+      });
+
+      set(ref(getDatabase(), `users/${createdUser.user.uid}`), {
+        name: createdUser.user.displayName,
+        image: createdUser.user.photoURL
+      });
+
+      setSignUpLoading(false);
+      
     } catch (error) {
       setErrorFromSubmit(error.message);
       if (timer) clearTimeout(timer);
+      setSignUpLoading(false);
       timer = setTimeout(() => {
         setErrorFromSubmit('');
       }, 3000);
@@ -56,7 +73,7 @@ const RegisterPage = () => {
         {errors.password_check && errors.password_check.type === 'required' && <p className='error_txt'>비밀번호 확인은 필수 입력사항입니다.</p>}
         {errors.password_check && errors.password_check.type === 'validate' && <p className='error_txt'>비밀번호가 일치하지 않습니다.</p>}
 
-        <input type="submit" />
+        <input type="submit" className={`${signUpLoading ? 'button_disabled' : ''}`}/>
 
         {errorFromSubmit && <p className='error_txt'>{errorFromSubmit}</p>}
       </form>

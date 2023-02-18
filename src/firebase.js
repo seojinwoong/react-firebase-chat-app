@@ -4,14 +4,13 @@ import "firebase/database";
 import "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAhZdwqhEEK7Fpp0uiyQeI9VpzM2yyRILY",
-  authDomain: "react-firebase-chatapp-f0033.firebaseapp.com",
-  projectId: "react-firebase-chatapp-f0033",
-  storageBucket: "react-firebase-chatapp-f0033.appspot.com",
-  messagingSenderId: "833646238919",
-  appId: "1:833646238919:web:521cec5c90d1fd520032e2",
-  measurementId: "G-9SWKF9RM2E"
-};
+    apiKey: "AIzaSyAqPdxiyytcoIELu9efAZcu2dPclZIdK_g",
+    authDomain: "react-firebase-chatapp-3.firebaseapp.com",
+    projectId: "react-firebase-chatapp-3",
+    storageBucket: "react-firebase-chatapp-3.appspot.com",
+    messagingSenderId: "86095112595",
+    appId: "1:86095112595:web:364ab6258c5800b923a066"
+  };
 
 const app = initializeApp(firebaseConfig);
 

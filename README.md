@@ -84,3 +84,14 @@ handleSubmit이라는 메서드를 제공해준다. 이것을 이용하자.
 submit을 하면 email, password로 계정을 생성하기
 순서 1) getAuth()로 auth를 생성해준다.
 순서 2) createUserWithEmailAndPassword 메서드를 사용해 인증된 계정을 생성해준다.
+
+## 2023-02-14 ("로그인 페이지 만들기" 까지 들음)
+- firebase의 기능을 통해 회원가입을 하려고 할 때 기본세팅을 하지 않았으므로 오류가 발생한다.
+- 해결 방법
+
+![study_1](/study/study_2.png)
+프로젝트 상세에서 Authentication으로 들어간다
+
+![study_1](/study/study_3.png)
+![study_1](/study/study_4.png)
+Users 탭에 회원들의 정보를 알 수 있다.

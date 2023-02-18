@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import app from './firebase';
+import app from './firebase'; // 지우지 말것!
 
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
@@ -20,8 +20,8 @@ root.render(
   <React.StrictMode>
     <Provider store={createStoreWithMiddleware(
       Reducer,
-      window.__REDUX__DEVTOOLS_EXTENSION__ &&
-      window.__REDUX__DEVTOOLS_EXTENSION__()
+      window.__REDUX_DEVTOOLS_EXTENSION__ &&
+      window.__REDUX_DEVTOOLS_EXTENSION__()
     )}>
       <Router>
         <App />

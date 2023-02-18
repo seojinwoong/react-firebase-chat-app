@@ -25,3 +25,4 @@ code { font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', mon
 .auth-wrapper button[type='button'] { display: block; appearance: none; background: #333; color: white; border: none; text-transform: uppercase; padding: 10px 20px; border-radius: 4px; } 
 .auth-wrapper hr { margin-top: 30px; } 
 .auth-wrapper button { display: block; appearance: none; margin-top: 40px; border: 1px solid #333; margin-bottom: 20px; text-transform: uppercase; padding: 10px 20px; border-radius: 4px; } 
+.button_disabled {pointer-events: none; cursor: not-allowed; opacity: 0.4;}
