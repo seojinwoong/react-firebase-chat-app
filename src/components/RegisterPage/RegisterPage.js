@@ -1,9 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import md5 from 'md5';
-import { getDatabase, ref, set } from 'firebase/database';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { getDatabase, ref, set } from 'firebase/database';
+import md5 from 'md5';
+
+let timer;
 
 const RegisterPage = () => {
   const { register, watch, formState: { errors }, handleSubmit } = useForm();
@@ -16,25 +18,28 @@ const RegisterPage = () => {
   const onSubmit = async (data) => {
     try {
       setLoading(true);
+
       const auth = getAuth();
       let createdUser = await createUserWithEmailAndPassword(auth, data.email, data.password);
-
+      
       await updateProfile(auth.currentUser, {
         displayName: data.name,
         photoURL: `http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`
       });
 
-      // firebase 데이터베이스에 저장해주기
       set(ref(getDatabase(), `users/${createdUser.user.uid}`), {
         name: createdUser.user.displayName,
         image: createdUser.user.photoURL
       });
 
       setLoading(false);
-    } catch (error) {
-      setErrorFromSubmit(error.message);
+    } catch (err) {
+      setErrorFromSubmit(err.message);
       setLoading(false);
-      setTimeout(() => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+      timer = setTimeout(() => {
         setErrorFromSubmit('');
       }, 5000);
     }
@@ -42,34 +47,33 @@ const RegisterPage = () => {
 
   return (
     <div className='auth-wrapper'>
-      <div style={{ textAlign: 'center' }}>
-        <h3>register</h3>
-      </div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label>Email</label>
-        <input type="email" name="email" {...register('email', { required: true, pattern: /^\S+@\S+$/i })} />
-        {errors.email && <p className='error_message'>This Email field is required</p>}
+       <div style={{ textAlign: 'center' }}>
+        <h3>회원가입</h3>
+       </div>
+       <form onSubmit={handleSubmit(onSubmit)}>
+          <label>이메일</label>
+          <input type="email" name='email' { ...register('email', { required: true, pattern: /^\S+@\S+$/i }) } />
+          { errors.email && <p className='error_message'>이메일은 필수 입력사항입니다.</p> }
 
-        <label>Name</label>
-        <input name="name" {...register('name', { required: true, maxLength: 10 })} />
-        {errors.name && errors.name.type === 'required' && <p className='error_message'>This Name field is required</p>}
-        {errors.name && errors.name.type === 'maxLength' && <p className='error_message'>your name exceed maximum length</p>}
+          <label>이름</label>
+          <input name='name' { ...register('name', { required: true, maxLength: 10 }) } />
+          { errors.name && errors.name.type === 'required' && <p className='error_message'>이름은 필수 입력사항입니다.</p> }
+          { errors.name && errors.name.type === 'maxLength' && <p className='error_message'>이름은 최대 10자까지 입력하실 수 있습니다.</p> }
 
-        <label>Password</label>
-        <input name="password" type='password' {...register('password', { required: true, minLength: 6 })} />
-        {errors.password && errors.password.type === 'required' && <p className='error_message'>This password field is required</p>}
-        {errors.password && errors.password.type === 'minLength' && <p className='error_message'>password must have at least 6 characters</p>}
+          <label>비밀번호</label>
+          <input type="password" name='passsword' { ...register('password', { required: true, minLength: 6 }) } />
+          { errors.password && errors.password.type === 'required' && <p className='error_message'>비밀번호는 필수 입력사항입니다.</p> }
+          { errors.password && errors.password.type === 'minLength' && <p className='error_message'>비밀번호는 최소 6자 이상 입력하셔야 합니다.</p> }
 
-        <label>Password Confirm</label>
-        <input name="password_confirm" type='password' {...register('password_confirm', { required: true, validate: value => value === password.current })} />
-        {errors.password_confirm && errors.password_confirm.type === 'required' && <p className='error_message'>This password Confirm field is required</p>}
-        {errors.password_confirm && errors.password_confirm.type === 'validate' && <p className='error_message'>the passwords do not match</p>}
+          <label>비밀번호 확인</label>
+          <input type="password" name='password_check' { ...register('password_check', { required: true, validate: (value) => value === password.current }) } />
+          { errors.password_check && errors.password_check.type === 'required' && <p className='error_message'>비밀번호 확인은 필수 입력사항입니다.</p> }
+          { errors.password_check && errors.password_check.type === 'validate' && <p className='error_message'>비밀번호가 일치하지 않습니다.</p> }
 
-        {errorFromSubmit && <p>{errorFromSubmit}</p>}
-
-        <input type="submit" disabled={loading}/>
-        <Link style={{ color: 'gray', textDecoration: 'none' }} to='/login'>이미 아이디가 있다면,,,</Link>
-      </form>
+          {errorFromSubmit && <p className='error_from_submit'>{errorFromSubmit}</p>}
+          <input type="submit" disabled={loading}/>
+       </form>
+       <Link to="/" style={{ textDecoration: 'none', color: '#333' }}>이미 아이디가 존재한다면,,,</Link>
     </div>
   )
 }
