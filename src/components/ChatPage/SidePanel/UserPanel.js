@@ -3,14 +3,14 @@ import { BsFillChatFill } from 'react-icons/bs';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Image from 'react-bootstrap/Image';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAuth, signOut } from 'firebase/auth';
-import { getStorage, ref, uploadBytesResumable } from 'firebase/storage';
-import {setPhotoURL} from '../../../redux/actions/user_action';
+import { getAuth, signOut, updateProfile } from 'firebase/auth';
+import { getDownloadURL, getStorage, ref as strRef, uploadBytesResumable } from 'firebase/storage';
+import { setPhotoURL } from '../../../redux/actions/user_action';
 
 const UserPanel = () => {
   const user = useSelector(state => state.user.currentUser);
-  const imgUploadBtn = useRef();
   const dispatch = useDispatch();
+  const inputOpenImageRef = useRef();
 
   const handleLogout = () => {
     const auth = getAuth();
@@ -20,39 +20,35 @@ const UserPanel = () => {
 
     });
   }
+
   const handleImgBtnClick = () => {
-    imgUploadBtn.current.click();
+    inputOpenImageRef.current.click();
   }
 
-  const handleUploadImg = async (e) => {
-    const file = e.target.files[0];
+  const handleUploadImg = async (event) => {
+    const file = event.target.files[0];
     const auth = getAuth();
     const user = auth.currentUser;
 
     const metadata = { contentType: file.type };
     const storage = getStorage();
-
+    
     try {
-      let uploadTask = uploadBytesResumable(ref(storage, `user_image/${user.uid}`), file, metadata); 
-      let downloadURL = await uploadTask.ref.getDownloadURL();
+      let uploadTask = uploadBytesResumable(strRef(storage, `user_image/${user.uid}`), file, metadata);
 
-      // 프로필 이미지 수정
-      await firebase.auth().currentUser.updateProfile({
-        photoURL: downloadURL
+      getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+        updateProfile(user, {
+          photoURL: downloadURL
+        });
+
+        dispatch(setPhotoURL(downloadURL));
       });
-      
-      dispatch(setPhotoURL(downloadURL));
-
-      // 데이터베이스 유저 이미지 수정
-      await firebase.database().ref('users')
-        .child(user.uid)
-        .update({ image: downloadURL })
-        
-
     } catch (error) {
-      console.error(error.message);
+      console.log(error.message);
     }
   }
+
+
 
   return (
     <div>
@@ -75,7 +71,7 @@ const UserPanel = () => {
             <Dropdown.Item onClick={handleLogout}>로그아웃</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
-        <input type="file" onChange={handleUploadImg} ref={imgUploadBtn} style={{ display: 'none' }} accept="image/jpeg, image/png"/>
+        <input type="file" onChange={handleUploadImg} ref={inputOpenImageRef} style={{ display: 'none' }} accept="image/jpeg, image/png"/>
 
       </div>
     </div>

@@ -95,3 +95,18 @@ submit을 하면 email, password로 계정을 생성하기
 ![study_1](/study/study_3.png)
 ![study_1](/study/study_4.png)
 Users 탭에 회원들의 정보를 알 수 있다.
+
+## 2023-02-22 ("프로필 이미지 수정(3) 리덕스 스토어 데이터 변경 및 데이터베이스에 데이터 저장" 까지 들음)
+- redux의 데이터 flow (엄격한 단방향 데이터 flow)
+![study_1](/study/study_5.png)
+
+- 프로필 이미지 수정흐름
+1) 프론트단에서 이미지를 지정한 event를 실행해주면
+2) firebase storage에 해당 파일과 contentType을 저장한다.
+3) firebase storage에 저장했다면 그 다음에는 auth의 유저정보랑 database의 user 유저정보를 변경해준다.
+
+- 어떠한 경우에 async await을 써야하는가 아리까리할때,,,
+1) 일단 method를 실행하고 결과를 변수에 저장하는데, await을 쓰지 않고 저장해본다
+2) 변수에 담은 결과물을 console.log로 찍어보는데 
+3) 그런데 이런식으로 Promise로 나온다면 await을 써주자.
+![study_1](/study/study_6.png)
