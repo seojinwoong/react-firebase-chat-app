@@ -4,7 +4,7 @@ import chatRoom from './chatRoom_reducer';
 
 const rootReducer = combineReducers({
     user,
-    // chatRoom
+    chatRoom
 });
 
 export default rootReducer;

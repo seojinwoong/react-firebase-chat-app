@@ -136,6 +136,25 @@ export default connect(mapStateToProps)(ChatRooms)
 ```
 
 이런식으로 하단 export 부분에 사용해주면 useSelector처럼 사용할 수 있다.
+
+
+## 2023-02-25 
+- 클래스형 컴포넌트에서 dispatch는 어떻게 사용하는가?
+```js
+// 함수형 컴포넌트
+import { useDispatch } from 'react-redux';
+let dispatch = useDispatch();
+
+// 클래스형 컴포넌트
+this.props.dispatch("action 이름");
+```
+
+- 클래스형 컴포넌트에서 componentDidMount componentWillUnmount
+
+componentDidMount : 컴포넌트가 처음으로 생성되고 나서의 실행
+
+componentWillUnmount : 컴포넌트가 사라지기 전 실행할 명령어 
+
   
 
 
