@@ -101,7 +101,7 @@ Users 탭에 회원들의 정보를 알 수 있다.
 ![study_1](/study/study_5.png)
 
 - 프로필 이미지 수정흐름
-1) 프론트단에서 이미지를 지정한 event를 실행해주면
+1) 프론트단에서 이미지 저장  event를 실행해주면
 2) firebase storage에 해당 파일과 contentType을 저장한다.
 3) firebase storage에 저장했다면 그 다음에는 auth의 유저정보랑 database의 user 유저정보를 변경해준다.
 
@@ -110,3 +110,32 @@ Users 탭에 회원들의 정보를 알 수 있다.
 2) 변수에 담은 결과물을 console.log로 찍어보는데 
 3) 그런데 이런식으로 Promise로 나온다면 await을 써주자.
 ![study_1](/study/study_6.png)
+
+
+## 2023-02-23 ("ChatRoom 생성하기" 까지 들음)
+- 함수형 컴포넌트를 클래스형 컴포넌트로 바꾸는 연습을 하자.
+ChatRooms.js 를 보면서 연습하기
+
+- 클래스형 컴포넌트에서 useSelector 기능 사용하기
+
+클래스형 컴포넌트에서는 react hook을 사용할 수 없다
+그렇다면 redux의 데이터는 어떻게 받아올 것인가? ==>
+connect라는 기능이 있다
+```js
+import { connect } from 'react-redux';
+
+...
+
+const mapStateToProps = state => {
+  return {
+    user: state.user.currentUser
+  }
+}
+
+export default connect(mapStateToProps)(ChatRooms)
+```
+
+이런식으로 하단 export 부분에 사용해주면 useSelector처럼 사용할 수 있다.
+  
+
+
