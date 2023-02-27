@@ -86,6 +86,7 @@ export class ChatRooms extends Component {
 
   changeChatRoom = (room) => {
     this.props.dispatch(setCurrentChatRoom(room));
+    this.setState({ activeChatRoomId: room.id });
   }
 
   renderChatRooms = chatRooms => 
