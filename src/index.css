@@ -11,9 +11,11 @@ code { font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', mon
 .auth-wrapper input { display: block; box-sizing: border-box; width: 100%; border-radius: 4px; padding: 10px 15px; margin-bottom: 10px; font-size: 14px; } 
 .auth-wrapper label { line-height: 2; text-align: left; display: block; margin-bottom: 13px; margin: 5px 0; font-size: 14px; font-weight: 200; } 
 .auth-wrapper button[type='submit'],
-.auth-wrapper input[type='submit'] { background: #ec5990; color: white; text-transform: uppercase; border: none; margin-top: 40px; padding: 20px; font-size: 16px; font-weight: 100; letter-spacing: 10px; } 
+.auth-wrapper input[type='submit'], 
+.message-form-button { background: #ec5990; color: white; text-transform: uppercase; border: none; margin-top: 40px; padding: 20px; font-size: 16px; font-weight: 100; letter-spacing: 10px; } 
 .auth-wrapper button[type='submit']:hover,
-.auth-wrapper input[type='submit']:hover { background: #bf1650; } 
+.auth-wrapper input[type='submit']:hover,
+.message-form-button { background: #bf1650; } 
 .auth-wrapper button[type='submit']:active,
 .auth-wrapper input[type='button']:active,
 .auth-wrapper input[type='submit']:active { transition: 0.3s all; transform: translateY(3px); border: 1px solid transparent; opacity: 0.8; } 
@@ -26,3 +28,4 @@ code { font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', mon
 .auth-wrapper hr { margin-top: 30px; } 
 .auth-wrapper button { display: block; appearance: none; margin-top: 40px; border: 1px solid #333; margin-bottom: 20px; text-transform: uppercase; padding: 10px 20px; border-radius: 4px; } 
 .button_disabled {pointer-events: none; cursor: not-allowed; opacity: 0.4;}
+

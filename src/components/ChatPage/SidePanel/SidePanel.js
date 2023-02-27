@@ -8,7 +8,6 @@ const SidePanel = () => {
   return (
     <div
       style={{
-        background: '#7b83eb',
         padding: '2rem',
         minHeight: '100vh',
         color: '#fff',

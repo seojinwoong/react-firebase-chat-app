@@ -136,6 +136,14 @@ export default connect(mapStateToProps)(ChatRooms)
 ```
 
 이런식으로 하단 export 부분에 사용해주면 useSelector처럼 사용할 수 있다.
+
+## 2023-02-27
+- firebase에서 데이터 실시간으로 받기
+
+firebase에서는 데이터베이스에 data가 저장되는 순간을 실시간으로 event listener로 받을 수 있다.
+
+![study_1](/study/study_7.png)
+
   
 
 
