@@ -137,13 +137,22 @@ export default connect(mapStateToProps)(ChatRooms)
 
 이런식으로 하단 export 부분에 사용해주면 useSelector처럼 사용할 수 있다.
 
-## 2023-02-27
+## 2023-02-27 ('메세지 저장하기' 까지 들음)
 - firebase에서 데이터 실시간으로 받기
 
 firebase에서는 데이터베이스에 data가 저장되는 순간을 실시간으로 event listener로 받을 수 있다.
 
 ![study_1](/study/study_7.png)
 
-  
+
+- firebase에 데이터 저장하기
+
+![study_1](/study/study_8.png)
+
+chatRoom이라는 이름의 table을 찾아 key의 id값을 가지는 행(row)를 찾아, newChatRoom의 정보를 넣어준다
+
+![study_1](/study/study_9.png)
+
+onChildAdded <- 값을 누군가가 넣거나, 내가 넣거나 여하튼 값이 추가되는 상황을 포착한다
 
 
