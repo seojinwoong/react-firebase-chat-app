@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { useSelector } from 'react-redux';
 
 import Form from 'react-bootstrap/Form';
@@ -7,6 +7,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 import { getDatabase, ref, set, push, child } from 'firebase/database';
+import { getDownloadURL, getStorage, ref as strRef, uploadBytesResumable } from 'firebase/storage';
 
 const MessageForm = () => {
   const chatRoom = useSelector(state => state.chatRoom.currentChatRoom);
@@ -16,10 +17,31 @@ const MessageForm = () => {
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
   const messagesRef = ref(getDatabase(), 'messages');
+  const inputOpenImgRef = useRef();
+
+  const handleOpenImg = () => {
+    inputOpenImgRef.current.click();
+  }
+
+  const handleUpload = (e) => {
+    const file = e.target.files[0];
+    const storage = getStorage();
+
+    const filePath = `/message/public/${file.name}`;
+    const metadata = { contentType: file.type };
+
+    try {
+      const storageRef = strRef(storage, filePath);
+      const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+      
+    } catch (error) {
+      console.error(error.message);
+    }
+  }
 
   const createMessage = (fileUrl = null) => {
     const message = {
-      timestamp: new Date(),
+      timestamp: "" + new Date(),
       user: {
         id: user.uid,
         name: user.displayName,
@@ -86,9 +108,12 @@ const MessageForm = () => {
         </Col>
         <Col>
         <button className='message-form-button'
+            onClick={handleOpenImg}
             style={{ width: '100%' }}
           >UPLOAD</button></Col>
       </Row>
+
+      <input type="file" accept="image/jpeg, image/png" style={{ display: 'none' }} ref={inputOpenImgRef} onChange={handleUpload}/>
     </div>
   )
 }

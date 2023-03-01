@@ -102,7 +102,7 @@ Users 탭에 회원들의 정보를 알 수 있다.
 
 - 프로필 이미지 수정흐름
 1) 프론트단에서 이미지 저장  event를 실행해주면
-2) firebase storage에 해당 파일과 contentType을 저장한다.
+2) firebase storage에 해당 파일과 contentType을 저장한다. (첫번째 인자: 해당파일의 정보, 두번째 인자: 해당파일의 contentType)
 3) firebase storage에 저장했다면 그 다음에는 auth의 유저정보랑 database의 user 유저정보를 변경해준다.
 
 - 어떠한 경우에 async await을 써야하는가 아리까리할때,,,
@@ -149,10 +149,26 @@ firebase에서는 데이터베이스에 data가 저장되는 순간을 실시간
 
 ![study_1](/study/study_8.png)
 
-chatRoom이라는 이름의 table을 찾아 key의 id값을 가지는 행(row)를 찾아, newChatRoom의 정보를 넣어준다
+chatRoom이라는 이름의 table을 찾아 key라는 id값을 가지는 행(row)를 찾아, newChatRoom의 정보를 넣어준다
 
 ![study_1](/study/study_9.png)
 
 onChildAdded <- 값을 누군가가 넣거나, 내가 넣거나 여하튼 값이 추가되는 상황을 포착한다
 
+## 2023-03-01
+- 정확한 이유는 모르겠지만,,, firebase에서 message의 내용들을 제대로 출력하기 위해서는 MainPanel 컴포넌트에 key값을 넣어준다.
 
+![study_1](/study/study_10.png)
+
+- 시간과 관련한 기능들을 사용할 수 있는 라이브러리 => moment.js
+```js
+npm install moment
+```
+
+- hasOwnProperty
+해당 Object가 key를 가지고 있는지, 있다면 true 반환 없다면 false 반환
+
+![study_1](/study/study_11.png)
+
+- percentage 구하는 방법 (수학적)
+![study_1](/study/study_12.png)
