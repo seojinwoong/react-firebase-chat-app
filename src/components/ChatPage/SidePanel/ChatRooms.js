@@ -4,9 +4,8 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
-import { getDatabase, ref, push, child, update, off, onChildAdded } from 'firebase/database';
+import { getDatabase, ref, push, child, update, onChildAdded, off } from 'firebase/database';
 import { setCurrentChatRoom } from '../../../redux/actions/chatRoom_action';
-
 export class ChatRooms extends Component {
   state = {
     show: false,
@@ -19,8 +18,9 @@ export class ChatRooms extends Component {
   };
 
   componentDidMount() {
-    this.addChatRoomsListeners();
+    this.AddChatRoomsListeners();
   }
+
   componentWillUnmount() {
     off(this.state.chatRoomsRef);
   }
@@ -34,17 +34,15 @@ export class ChatRooms extends Component {
     this.setState({ firstLoad: false });
   }
 
-  addChatRoomsListeners = () => {
+  AddChatRoomsListeners = () => {
     let chatRoomsArray = [];
-
     onChildAdded(this.state.chatRoomsRef, DataSnapshot => {
       chatRoomsArray.push(DataSnapshot.val());
-      this.setState({ chatRooms: chatRoomsArray }, () => {
-        this.setFirstChatRoom()
-      });
-    })
+      this.setState({ chatRooms: chatRoomsArray }, 
+        () => this.setFirstChatRoom()  
+      )
+    }); 
   }
-
 
   handleClose = () => this.setState({ show: false });
   handleShow = () => this.setState({ show: true });
@@ -91,6 +89,18 @@ export class ChatRooms extends Component {
     this.setState({ activeChatRoomId: room.id });
   }
 
+  renderChatRooms = chatRooms => 
+    chatRooms.length > 0 &&
+    chatRooms.map(room => (
+      <li
+        key={room.id}
+        style={{ backgroundColor: room.id === this.state.activeChatRoomId && '#ffffff45' }}
+        onClick={() => this.changeChatRoom(room)}
+      >
+        # {room.name}
+      </li>
+    ))
+
   render() {
     return (
     <div>
@@ -105,16 +115,12 @@ export class ChatRooms extends Component {
               position: 'absolute', right: 0, cursor: 'pointer'
             }}
           />
-
         </div>
 
         <ul style={{ listStyleType: 'none', padding: 0 }}>
-            { this.state.chatRooms.length > 0 && this.state.chatRooms.map(chatRoom => (
-              <li key={chatRoom.id} style={{ backgroundColor: chatRoom.id === this.state.activeChatRoomId && '#ffffff45' }} onClick={() => this.changeChatRoom(chatRoom)}>  
-                  # {chatRoom.name}
-              </li>
-            )) }
+          {this.renderChatRooms(this.state.chatRooms)}
         </ul>
+
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
             <Modal.Title>Modal heading</Modal.Title>

@@ -5,10 +5,10 @@ import MainPanel from './MainPanel/MainPanel';
 const ChatPage = () => {
   return (
     <div style={{ display: 'flex' }}>
-      <div style={{ width: '300px' }}>
+      <div style={{ width: '300px', background: '#7b83eb'}}>
         <SidePanel />
       </div>
-      <div style={{ width: '300px' }}>
+      <div style={{ width: "100%" }}>
         <MainPanel />
       </div>
     </div>
