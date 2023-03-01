@@ -16,6 +16,7 @@ const MessageForm = () => {
   const [content, setContent] = useState('');
   const [errors, setErrors] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [percentage, setPercentage] = useState(0);
   const messagesRef = ref(getDatabase(), 'messages');
   const inputOpenImgRef = useRef();
 
@@ -29,11 +30,27 @@ const MessageForm = () => {
 
     const filePath = `/message/public/${file.name}`;
     const metadata = { contentType: file.type };
-
+    setLoading(true);
     try {
       const storageRef = strRef(storage, filePath);
       const uploadTask = uploadBytesResumable(storageRef, file, metadata);
       
+      uploadTask.on('state_changed', 
+        snapshot => {
+          const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+          setPercentage(progress);
+        },
+        error => {
+          console.error(error.message);
+          setLoading(false);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then(downloadURL => {
+            set(push(child(messagesRef, chatRoom.id)), createMessage(downloadURL))
+            setLoading(false);
+          });
+        }
+      )
     } catch (error) {
       console.error(error.message);
     }
@@ -85,7 +102,6 @@ const MessageForm = () => {
     }
   }
 
-  const now = 60;
   return (
     <div>
         <Form onSubmit={handleSubmit}>
@@ -97,8 +113,10 @@ const MessageForm = () => {
             onChange={handleChange}
           />
         </Form>
-      <ProgressBar now={now} label={`${now}%`} />
-
+      {
+        !(percentage === 0 || percentage === 100)
+        && <ProgressBar now={percentage} label={`${percentage}%`} />
+      }
       <Row>
         <Col>
           <button className='message-form-button'
