@@ -185,3 +185,13 @@ await 뒤의 작업이 완료될때까지 기다린다.
 2번째 parameter => 이벤트가 진행중일 때 처리 함수
 3번째 parameter => 오류가 발생했을 때 처리 함수
 4번째 parameter => 이벤트가 완료되고 나서의 함수
+
+## 2023-03-02
+- 정규표현식
+```js
+  const regex = new RegExp(찾으려는 value, modifiers 넣는 부분);
+```
+g modifier : global 모든 해당사항을 찾는다. 매칭되는 첫번째만 찾지 않고 모두 찾는다.
+
+i modifier : insensitive 대소문자 구분을 하지 않고 해당사항을 찾는다.
+

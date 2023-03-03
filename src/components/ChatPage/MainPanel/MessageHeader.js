@@ -10,7 +10,7 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Image from 'react-bootstrap/Image';
 import Accordion from 'react-bootstrap/Accordion';
 
-const MessageHeader = () => {
+const MessageHeader = ({handleSearchChange}) => {
   return (
     <div style={{
       width: '100%',
@@ -27,6 +27,7 @@ const MessageHeader = () => {
           <InputGroup size="sm" className="mb-3">
             <InputGroup.Text id="inputGroup-sizing-sm"><FcSearch /></InputGroup.Text>
             <Form.Control
+              onChange={handleSearchChange}
               aria-label="Small"
               aria-describedby="inputGroup-sizing-sm"
             />

@@ -9,7 +9,10 @@ export class MainPanel extends Component {
   state = {
     messages: [],
     messagesRef: ref(getDatabase(), 'messages'),
-    messagesLoading: true
+    messagesLoading: true,
+    searchTerm: '',
+    searchResults: [],
+    searchLoading: false,
   }
 
   componentDidMount() {
@@ -33,6 +36,28 @@ export class MainPanel extends Component {
     })
   }
 
+  handleSearchChange = (event) => {
+    this.setState({
+      searchTerm: event.target.value,
+      searchLoading: true
+    }, () => this.handleSearchMessages())
+  }
+
+  handleSearchMessages = () => {
+    const chatRoomMessages = [...this.state.messages];
+    const regex = new RegExp(this.state.searchTerm, 'gi');
+    const searchResults = chatRoomMessages.reduce((acc, message) => {
+      if (
+        (message.content && message.content.match(regex)) ||
+        message.user.name.match(regex) 
+      ) {
+        acc.push(message);
+      }
+      return acc;
+    }, []);
+    this.setState({ searchResults });
+  }
+
   renderMessage = (messages) => 
     messages.length > 0 &&
     messages.map(message => (
@@ -44,10 +69,10 @@ export class MainPanel extends Component {
     ))
 
   render() {
-    const { messages } = this.state;
+    const { messages, searchTerm, searchResults } = this.state;
     return (
      <div style={{ padding: '2rem 2rem 0 2rem' }}>
-        <MessageHeader/>
+        <MessageHeader handleSearchChange={this.handleSearchChange}/>
         <div style={{
           width: '100%',
           height: '450px',
@@ -57,7 +82,11 @@ export class MainPanel extends Component {
           marginBottom: '1rem',
           overflowY: 'auto'
         }}>
-          {this.renderMessage(messages)}
+          {
+            searchTerm 
+            ? this.renderMessage(searchResults)
+            : this.renderMessage(messages)
+          }
         </div>
         <MessageForm />
      </div>
