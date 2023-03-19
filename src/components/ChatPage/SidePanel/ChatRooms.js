@@ -6,15 +6,20 @@ import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
 import { getDatabase, ref, push, child, update, onChildAdded, off } from 'firebase/database';
 import { setCurrentChatRoom } from '../../../redux/actions/chatRoom_action';
+import Badge from 'react-bootstrap/Badge';
+
 export class ChatRooms extends Component {
   state = {
     show: false,
     name: '',
     description: '',
     chatRoomsRef: ref(getDatabase(), 'chatRooms'),
+    messagesRef: ref(getDatabase(), 'messages'),
     chatRooms: [],
     firstLoad: true,
     activeChatRoomId: '',
+    notifications: [],
+
   };
 
   componentDidMount() {
@@ -41,7 +46,40 @@ export class ChatRooms extends Component {
       this.setState({ chatRooms: chatRoomsArray }, 
         () => this.setFirstChatRoom()  
       )
+      this.addNotificationListener(DataSnapshot.key);
     }); 
+  }
+
+  addNotificationListener = (chatRoomId) => {
+    this.state.messagesRef.child(chatRoomId).on('value', DataSnapshot => {
+      if (this.props.chatRoom) {
+        this.handleNotification(
+          chatRoomId, // 생성된 방들의 고유 아이디
+          this.props.chatRoom.id, // 현재 채팅방의 아이디
+          this.state.notifications, //
+          DataSnapshot
+        )
+      }
+    });
+  }
+
+  handleNotification = (chatRoomId, currentChatRoomId, notifications, DataSnapshot) => {
+    //  목표는,,, 방 하나 하나에 맞는 알림 정보를 notifications state에 넣어주기
+
+    // 이미 notifications state 안에 알림 정보가 들어있는 채팅방과, 그렇지 않은 채팅방을 나누어주기
+    let index = notifications.findIndex(notification => notification.id  === chatRoomId)
+
+    if (index === -1) { // notifications state 안에 해당 채팅방의 알림 정보가 없을 때
+      notifications.push({
+        id: chatRoomId,
+        total: DataSnapshot.numChildren(),
+        lastKnwonTotal: DataSnapshot.numChildren(),
+        count: 0
+      })
+    } else { // 이미 해당 채팅방의 알림 정보가 있을 때
+      
+    }
+
   }
 
   handleClose = () => this.setState({ show: false });
@@ -94,10 +132,11 @@ export class ChatRooms extends Component {
     chatRooms.map(room => (
       <li
         key={room.id}
-        style={{ backgroundColor: room.id === this.state.activeChatRoomId && '#ffffff45' }}
+        style={{ backgroundColor: room.id === this.state.activeChatRoomId && '#ffffff45', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
         onClick={() => this.changeChatRoom(room)}
       >
-        # {room.name}
+        <p className='roomName mb0'># {room.name}</p>
+        <Badge>2</Badge>
       </li>
     ))
 
@@ -163,7 +202,8 @@ export class ChatRooms extends Component {
 
 const mapStateToProps = state => {
   return {
-    user: state.user.currentUser
+    user: state.user.currentUser,
+    chatRoom: state.chatRoom.currentChatRoom
   }
 }
 

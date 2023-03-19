@@ -1,5 +1,6 @@
 body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; } 
 code { font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace; } 
+.mb0 {margin-bottom: 0 !important;}
 
 .auth-wrapper {display: flex; height:100vh; align-items: center; justify-content: center; flex-direction: column;}
 .auth-wrapper .title {text-align: center; font-weight: bold;}
