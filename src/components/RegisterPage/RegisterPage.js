@@ -1,21 +1,32 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
 const RegisterPage = () => {
-
+  const [errorFromSubmit, setErrorFromSubmit] = useState('');
   const { register, watch, formState: { errors }, handleSubmit } = useForm();
   const password = useRef();
   password.current = watch('password');
 
-  console.log('password.current', password.current);
+  const onSubmit = async (data) => {
+
+    try {
+      let createdUser = await firebase.auth().createUserWithEmailAndPassword(data.email, data.password);
+      console.log('createdUser', createdUser);
+    } catch (error) {
+      setErrorFromSubmit(error.message);
+      setTimeout(() => {
+        setErrorFromSubmit('');
+      }, 5000);
+    }
+  }
 
   return (
     <div className='auth-wrapper'>
       <div style={{ textAlign: 'center' }}>
         <h3>Register</h3>
       </div>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <label>email</label>
         <input type="email" name='email' { ...register('email', { required: true, pattern: /^\S+@\S+$/i }) }/>
         { errors.email && errors.email.type === 'required' && <p>이메일은 필수입력 값입니다.</p> }
@@ -36,6 +47,7 @@ const RegisterPage = () => {
         { errors.password_confirm && errors.password_confirm.type === 'required' && <p>비밀번호 확인은 필수입력 값입니다.</p> }
         { errors.password_confirm && errors.password_confirm.type === 'validate' && <p>비밀번호가 일치하지 않습니다.</p> }
         
+        { errorFromSubmit && <p className='error_message'>{errorFromSubmit}</p> }
         <input type="submit" />
 
         <Link style={{ color: 'gray', textDecoration: 'none' }} to="/login">이미 아이디가 있다면,,,</Link>
