@@ -71,8 +71,9 @@ react-hook-form은 form의 유효성 검사를 좀 더 손쉽게 진행할 수 �
 사용법
 
 ![study_1](/study/study_1.png)
+c.f) react-hook-form을 사용하면 state로 굳이 input을 관리할 필요가 없다.
 
-## 2023-01-28 ("firebase에서 이메일로 유저 생성시 생기는 문제점" 까지 들음)
+## 2023-01-28 ("firebase에서 이메일로 유저 생성시 생기는 문제점" 까지 들음)
 
 react-hook-form을 사용할 시에는
 handleSubmit이라는 메서드를 제공해준다. 이것을 이용하자.
