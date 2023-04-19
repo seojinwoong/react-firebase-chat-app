@@ -77,6 +77,7 @@ c.f) react-hook-form을 사용하면 state로 굳이 input을 관리할 필요�
 
 react-hook-form을 사용할 시에는
 handleSubmit이라는 메서드를 제공해준다. 이것을 이용하자.
+handleSubmit의 함수를 사용하면 첫번째 매개변수에 입력한 form의 값들이 객체 형태로 들어가있다.
 ```js
   const { register, watch, formState: {errors}, handleSubmit } = useForm();
   <form onSubmit={handleSubmit(onSubmit)}>
