@@ -2,31 +2,33 @@ import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+import Spinner from 'react-bootstrap/Spinner';
 
 let timer;
 
 const RegisterPage = () => {
   const [errorFromSubmit, setErrorFromSubmit] = useState('');
+  const [loading, setLoading] = useState(false);
   const { register, watch, formState: { errors }, handleSubmit } = useForm();
   const password = useRef();
   password.current = watch('password');
 
   const onSubmit = async (data) => {
     try {
+      setLoading(true);
       const auth = getAuth();
       const createdUser = await createUserWithEmailAndPassword(auth, data.email, data.password);
-      console.log('createdUser 출력', createdUser);
+      setLoading(false);
 
     } catch (error) {
       setErrorFromSubmit(error.message);
+      setLoading(false);
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => {
         setErrorFromSubmit('');
       }, 5000); 
     }
   }
-
-
 
   return (
     <div className='auth-wrapper'>
@@ -55,7 +57,12 @@ const RegisterPage = () => {
         { errors.password_confirm && errors.password_confirm.type === 'validate' && <p>비밀번호가 일치하지 않습니다.</p> }
         
         { errorFromSubmit && <p className='error_message'>{errorFromSubmit}</p> }
-        <input type="submit" />
+
+        <button disabled={loading} >
+          {loading ? <Spinner animation="border" variant="light" /> : '제출'}
+        </button>
+
+
 
         <Link style={{ color: 'gray', textDecoration: 'none' }} to="/login">이미 아이디가 있다면,,,</Link>
       </form>
