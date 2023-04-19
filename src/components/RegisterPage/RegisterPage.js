@@ -1,6 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
+
+let timer;
 
 const RegisterPage = () => {
   const [errorFromSubmit, setErrorFromSubmit] = useState('');
@@ -9,17 +12,21 @@ const RegisterPage = () => {
   password.current = watch('password');
 
   const onSubmit = async (data) => {
-
     try {
-      let createdUser = await firebase.auth().createUserWithEmailAndPassword(data.email, data.password);
-      console.log('createdUser', createdUser);
+      const auth = getAuth();
+      const createdUser = await createUserWithEmailAndPassword(auth, data.email, data.password);
+      console.log('createdUser 출력', createdUser);
+
     } catch (error) {
       setErrorFromSubmit(error.message);
-      setTimeout(() => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
         setErrorFromSubmit('');
-      }, 5000);
+      }, 5000); 
     }
   }
+
+
 
   return (
     <div className='auth-wrapper'>
