@@ -87,6 +87,12 @@ submit을 하면 email, password로 계정을 생성하기
 순서 1) getAuth()로 auth를 생성해준다.
 순서 2) createUserWithEmailAndPassword 메서드를 사용해 인증된 계정을 생성해준다.
 
+### firebase 데이터베이스에 저장하는 방법
+![study_15](/study/study_15.png)
+1. users 라는 테이블이 있는지 확인 (없다면 users 테이블 생성하기)
+2. users 라는 테이블에 uid인 row로 들어가서
+3. name, image 컬럼에 값을 넣는다.
+
 ## 2023-02-14 ("로그인 페이지 만들기" 까지 들음)
 - firebase의 기능을 통해 회원가입을 하려고 할 때 기본세팅을 하지 않았으므로 오류가 발생한다.
 - 해결 방법
