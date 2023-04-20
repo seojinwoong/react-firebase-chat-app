@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { getDatabase, ref, set } from 'firebase/database';
 import Spinner from 'react-bootstrap/Spinner';
 import md5 from 'md5';
 
@@ -26,7 +27,12 @@ const RegisterPage = () => {
       await updateProfile(auth.currentUser, {
         displayName: data.name,
         photoURL: `http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`
-      })
+      });
+
+      set(ref(getDatabase(), `/users/${createdUser.user.uid}`), {
+        name: createdUser.user.displayName,
+        image: createdUser.user.photoURL,
+      });
 
       setLoading(false);
 
