@@ -5,7 +5,7 @@ import LoginPage from './components/LoginPage/LoginPage';
 import RegisterPage from './components/RegisterPage/RegisterPage';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUser } from './redux/actions/user_action';
+import { setUser, clearUser } from './redux/actions/user_action';
 
 const App = () => {
   const auth = getAuth();
@@ -20,6 +20,7 @@ const App = () => {
         dispatch(setUser(user));        
       } else { // 로그인 하지 않은 경우
         navigate('/login');
+        dispatch(clearUser());
       }
     });
   }, []);
