@@ -93,6 +93,11 @@ submit을 하면 email, password로 계정을 생성하기
 2. users 라는 테이블에 uid인 row로 들어가서
 3. name, image 컬럼에 값을 넣는다.
 
+### 크롬브라우저 redux 탭으로 useSelector 할당값 쉽게 찾는방법
+ex) isLoading이라는 값을 찾고 싶다면?
+1. State의 ~ 2. user_reducer의 ~ 3. isLoading
+![study_16](/study/study_16.png)
+
 ## 2023-02-14 ("로그인 페이지 만들기" 까지 들음)
 - firebase의 기능을 통해 회원가입을 하려고 할 때 기본세팅을 하지 않았으므로 오류가 발생한다.
 - 해결 방법
