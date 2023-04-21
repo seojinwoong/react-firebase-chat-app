@@ -98,6 +98,13 @@ ex) isLoading이라는 값을 찾고 싶다면?
 1. State의 ~ 2. user_reducer의 ~ 3. isLoading
 ![study_16](/study/study_16.png)
 
+### firebase 스토리지에 이미지 저장하기
+![study_17](/study/study_17.png)
+1. firebase 스토리지 저장메서드 
+2. user_image 라는 폴더에 접근하기
+3. 파일의 이름을 명명
+4-1. 올리려는 파일
+4-2. 해당 파일의 meta 정보
 ## 2023-02-14 ("로그인 페이지 만들기" 까지 들음)
 - firebase의 기능을 통해 회원가입을 하려고 할 때 기본세팅을 하지 않았으므로 오류가 발생한다.
 - 해결 방법
