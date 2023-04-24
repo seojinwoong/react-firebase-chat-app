@@ -3,12 +3,56 @@ import { FaRegSmileWink, FaPlus } from 'react-icons/fa';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
+import { connect } from 'react-redux';
+import { getDatabase, ref, push, update, child } from 'firebase/database';
 export class ChatRooms extends Component {
   state = {
     modalShow: false,
+    name: "",
+    description: "",
+    chatRoomsRef: ref(getDatabase(), 'chatRooms'),
   }
-  setModalShow = () => {  this.setState({ modalShow: true }) };
-  setModalHide = () => {  this.setState({ modalShow: false }) };
+
+  isFormValid = (name, description) => name && description;
+
+  setModalShow = () => { this.setState({ modalShow: true }) };
+
+  setModalHide = () => { this.setState({ modalShow: false }) };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+
+    const { name, description } = this.state;
+    if (this.isFormValid(name, description)) {
+      this.addChatRoom();
+    }
+  }
+
+  addChatRoom = async () => {
+    const key = push(this.state.chatRoomsRef).key;
+    const { name, description } = this.state;
+    const { user } = this.props;
+    const newChatRoom = {
+      id: key,
+      name,
+      description,
+      createdBy: {
+        name: user.displayName,
+        image: user.photoURL
+      }
+    }
+
+    try {
+      await update(child(this.state.chatRoomsRef, key), newChatRoom);
+      this.setState({
+        name: "",
+        description: "",
+        modalShow: false
+      });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
   
   render() {
     return (
@@ -30,20 +74,24 @@ export class ChatRooms extends Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Form>
+            <Form onSubmit={this.handleSubmit}>
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>채팅방 이름</Form.Label>
-                <Form.Control type="text" placeholder="채팅방 이름을 작성해주세요." />
+                <Form.Control 
+                  onChange={e => this.setState({ name: e.target.value })}
+                  type="text" placeholder="채팅방 이름을 작성해주세요." />
               </Form.Group>
               <Form.Group className="mb-3" controlId="formBasicEmail">
                 <Form.Label>채팅방 상세설명</Form.Label>
-                <Form.Control as="textarea" placeholder="채팅방 이름을 작성해주세요." />
+                <Form.Control 
+                  onChange={e => this.setState({ description: e.target.value })}
+                  as="textarea" placeholder="채팅방 이름을 작성해주세요." />
               </Form.Group>
             </Form>
           </Modal.Body>
           <Modal.Footer>
-             <Button>채팅방 개설</Button>
-            <Button onClick={this.setModalHide}>닫기</Button>
+             <Button onClick={this.handleSubmit}>채팅방 개설</Button>
+             <Button onClick={this.setModalHide}>닫기</Button>
           </Modal.Footer>
         </Modal>
       </div>
@@ -51,4 +99,10 @@ export class ChatRooms extends Component {
   }
 }
 
-export default ChatRooms
+const mapStateToProps = state => {
+  return {
+    user: state.user_reducer.currentUser
+  }
+}
+
+export default connect(mapStateToProps)(ChatRooms);
