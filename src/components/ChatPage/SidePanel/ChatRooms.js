@@ -4,13 +4,27 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
-import { getDatabase, ref, push, update, child } from 'firebase/database';
+import { getDatabase, ref, push, update, child, onChildAdded } from 'firebase/database';
 export class ChatRooms extends Component {
   state = {
     modalShow: false,
     name: "",
     description: "",
     chatRoomsRef: ref(getDatabase(), 'chatRooms'),
+    chatRooms: []
+  }
+
+  componentDidMount() {
+    this.AddChatRoomsListener();
+  }
+
+  AddChatRoomsListener = () => {
+    let chatRoomsArray = [];
+
+    onChildAdded(this.state.chatRoomsRef, DataSnapshot => {
+        chatRoomsArray.push(DataSnapshot.val());
+        this.setState({ chatRooms: chatRoomsArray });
+    });
   }
 
   isFormValid = (name, description) => name && description;
@@ -53,6 +67,14 @@ export class ChatRooms extends Component {
       console.log(error.message);
     }
   }
+
+  renderChatRooms = (chatRooms) => 
+    chatRooms.length > 0 &&
+    chatRooms.map(chatRoom => (
+      <li key={chatRoom.id}>
+        # {chatRoom.name}
+      </li>
+    ))
   
   render() {
     return (
@@ -62,6 +84,10 @@ export class ChatRooms extends Component {
           CHAT ROOMS {" "} (1)
           <FaPlus style={{ position: 'absolute', right: 0, cursor: 'pointer' }} onClick={this.setModalShow}/>
         </div>
+
+        <ul style={{ listStyleType: 'none', padding: 0 }}>
+          { this.renderChatRooms(this.state.chatRooms) }
+        </ul>
 
         <Modal
           show={this.state.modalShow}
