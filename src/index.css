@@ -21,3 +21,6 @@ body { background: #0e101c; font-family: -apple-system, BlinkMacSystemFont, "Seg
 .auth-wrapper hr { margin-top: 30px; } 
 .auth-wrapper button { width: 100%; display: block; appearance: none; margin-top: 40px; border:none; margin-bottom: 20px; text-transform: uppercase; padding: 10px 20px; border-radius: 4px; background: #bf1650; color:#fff;} 
 .auth-wrapper button:disabled {background: grey; cursor: not-allowed;}
+
+.message-form-button {width: 100%; display: block; appearance: none; margin-top: 40px; border:none; margin-bottom: 20px; text-transform: uppercase; padding: 10px 20px; border-radius: 4px; background: #bf1650; color:#fff;}
+.message-form-button:hover {opacity:0.8;}
