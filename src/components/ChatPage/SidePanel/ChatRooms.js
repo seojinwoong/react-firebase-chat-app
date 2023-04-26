@@ -5,17 +5,29 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
 import { getDatabase, ref, push, update, child, onChildAdded } from 'firebase/database';
+import { setCurrentChatRoom } from '../../../redux/actions/chatRoom_action';
 export class ChatRooms extends Component {
   state = {
     modalShow: false,
     name: "",
     description: "",
     chatRoomsRef: ref(getDatabase(), 'chatRooms'),
-    chatRooms: []
+    chatRooms: [],
+    firstLoad: true,
+    activeChatRoomId: "",
   }
 
   componentDidMount() {
     this.AddChatRoomsListener();
+  }
+
+  setFirstChatRoom = () => {
+    if (this.state.firstLoad && this.state.chatRooms.length > 0) {
+      const firstChatRoom = this.state.chatRooms[0];
+      this.props.dispatch(setCurrentChatRoom(firstChatRoom));
+      this.setState({ activeChatRoomId: firstChatRoom.id });
+      this.setState({ firstLoad: false });
+    }
   }
 
   AddChatRoomsListener = () => {
@@ -23,7 +35,9 @@ export class ChatRooms extends Component {
 
     onChildAdded(this.state.chatRoomsRef, DataSnapshot => {
         chatRoomsArray.push(DataSnapshot.val());
-        this.setState({ chatRooms: chatRoomsArray });
+        this.setState({ chatRooms: chatRoomsArray }, () => {
+          this.setFirstChatRoom();
+        });
     });
   }
 
@@ -68,10 +82,18 @@ export class ChatRooms extends Component {
     }
   }
 
+  handleChangeChatRoom = (chatRoom) => {
+    this.props.dispatch(setCurrentChatRoom(chatRoom));
+    this.setState({ activeChatRoomId: chatRoom.id });
+  }
+
   renderChatRooms = (chatRooms) => 
     chatRooms.length > 0 &&
     chatRooms.map(chatRoom => (
-      <li key={chatRoom.id}>
+      <li key={chatRoom.id}
+        onClick={() => this.handleChangeChatRoom(chatRoom)}
+        style={{ backgroundColor: chatRoom.id === this.state.activeChatRoomId && '#ffffff45' }}
+      >
         # {chatRoom.name}
       </li>
     ))
@@ -127,7 +149,8 @@ export class ChatRooms extends Component {
 
 const mapStateToProps = state => {
   return {
-    user: state.user_reducer.currentUser
+    user: state.user_reducer.currentUser,
+    chatRoom: state.chatRoom_reducer.currentChatRoom
   }
 }
 
