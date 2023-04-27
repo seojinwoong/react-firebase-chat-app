@@ -19,7 +19,7 @@ const MessageForm = () => {
 
   const createMessage = (fileUrl = null) => {
     const message = {
-      timestamp: new Date(),
+      timestamp: "" + new Date(),
       user: {
         id: user.uid,
         name: user.displayName,

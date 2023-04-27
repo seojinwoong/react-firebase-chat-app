@@ -3,7 +3,7 @@ import MessageHeader from './MessageHeader';
 import Message from './Message';
 import MessageForm from './MessageForm';
 import { connect } from 'react-redux';
-import { getDatabase, ref, onChildAdded, child, DataSnapshot } from 'firebase/database';
+import { getDatabase, ref, onChildAdded, child } from 'firebase/database';
 export class MainPanel extends Component {
   state = {
     messages: [],
@@ -35,7 +35,7 @@ export class MainPanel extends Component {
   renderMessages = (messages) => 
     messages.length > 0 &&
     messages.map(message => (
-      <Message key={messages.timestamp} message={message} user={this.props.user}/>
+      <Message key={message.timestamp} message={message} user={this.props.user}/>
     ))
 
   render() {
