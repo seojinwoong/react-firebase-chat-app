@@ -12,7 +12,7 @@ const Message = ({message, user}) => {
 
   return (
       <div style={{ display: 'flex', marginBottom: '5px', backgroundColor: isMineMessage(message.user.id, user.uid) && '#ececec' }}>
-        <img className="user_thumbnail" src={message.user.image} alt={message.user.name} />
+        <img className="user_thumbnail" src={message.user.image} alt={message.user.name} style={{ width: '50px' }}/>
         <div className='user_chat_info'>
           <p className='user_name'>
             <span>{message.user.name}</span>

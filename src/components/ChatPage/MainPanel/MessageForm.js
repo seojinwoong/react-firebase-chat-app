@@ -1,21 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { getDatabase, ref, set, push, child } from 'firebase/database';
+import { getStorage, ref as strRef, uploadBytesResumable } from 'firebase/storage';
 
 import { useSelector } from 'react-redux';
+
+let errorTimer;
 
 const MessageForm = () => {
   const user = useSelector(state => state.user_reducer.currentUser);
   const chatRoom = useSelector(state => state.chatRoom_reducer.currentChatRoom);
   const [content, setContent] = useState('');
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesRef = ref(getDatabase(), 'messages');
   const now = 60;
+  const inputOpenImgRef = useRef();
 
   const createMessage = (fileUrl = null) => {
     const message = {
@@ -38,7 +42,11 @@ const MessageForm = () => {
 
   const handleSubmuit = async () => {
     if (!content) {
-      setErrors(prev => prev.concat('메세지를 입력해주세요'));
+      setErrors('메세지를 입력해주세요!');
+      if (errorTimer) clearTimeout(errorTimer);
+      errorTimer = setTimeout(() => {
+        setErrors("");
+      }, 5000);      
       return;
     } 
 
@@ -49,18 +57,35 @@ const MessageForm = () => {
 
       setLoading(false);
       setContent("");
-      setErrors([]);
+      setErrors("");
     } catch (error) {
-      setErrors(prev => prev.concat(error.message));
+      setErrors(error.message);
       setLoading(false);
-      setTimeout(() => {
-        setErrors([]);
+      if (errorTimer) clearTimeout(errorTimer);
+      errorTimer = setTimeout(() => {
+        setErrors("");
       }, 5000);      
     }
   }
 
   const handleChangeMessage = (e) => {
     setContent(e.target.value);
+  }
+
+  const handleOpenImageRef = () => { inputOpenImgRef.current.click(); }
+  const handleUploadImage = async (e) => {
+    const file = e.target.files[0];
+    const storage = getStorage();
+
+    const filePath = `/message/public/${file.name}`;
+    const metadata = { contentType: file.type };
+
+    try {
+      const storageRef = strRef(storage, filePath);
+      const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+    } catch (error) {
+      console.log(error.message);
+    }
   }
 
   return (
@@ -79,18 +104,19 @@ const MessageForm = () => {
 
       <ProgressBar now={now} label={`${now}%`} />
       
-      {
-        errors.length > 0 && errors.map(errorMsg => <p key={errorMsg} style={{ color: 'red' }}>{errorMsg}</p>)
-      }
+      { errors !== '' && <p style={{ color: 'red'}}>{errors}</p> }
 
       <Row>
         <Col>
           <button onClick={handleSubmuit} className="message-form-button" style={{ width: '100%' }}>SEND</button>
         </Col>
         <Col>
-          <button className="message-form-button" style={{ width: '100%' }}>UPLOAD</button>
+          <button onClick={handleOpenImageRef} className="message-form-button" style={{ width: '100%' }}>UPLOAD</button>
         </Col>
       </Row>
+
+      <input type="file" style={{ display: 'none' }} accept='images/jpeg, image/png' ref={inputOpenImgRef} onChange={handleUploadImage}/>
+
     </div>
   )
 }
