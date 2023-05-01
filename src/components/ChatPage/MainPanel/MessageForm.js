@@ -17,8 +17,8 @@ const MessageForm = () => {
   const [content, setContent] = useState('');
   const [errors, setErrors] = useState('');
   const [loading, setLoading] = useState(false);
+  const [percentage, setPercentage] = useState(0);
   const messagesRef = ref(getDatabase(), 'messages');
-  const now = 60;
   const inputOpenImgRef = useRef();
 
   const createMessage = (fileUrl = null) => {
@@ -83,6 +83,15 @@ const MessageForm = () => {
     try {
       const storageRef = strRef(storage, filePath);
       const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+
+      uploadTask.on('state_changed', (snapshot) => {
+        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+        setPercentage(progress);
+      }, (error) => {
+        console.log(error.message);
+      }, () => {
+        alert('이미지 업로드가 완료되었습니다!');
+      });
     } catch (error) {
       console.log(error.message);
     }
@@ -102,7 +111,10 @@ const MessageForm = () => {
         </FloatingLabel>
       </Form>
 
-      <ProgressBar now={now} label={`${now}%`} />
+      {
+        // !(percentage === 0 || percentage === 100) &&
+        <ProgressBar now={percentage} label={`${percentage}%`} />
+      }
       
       { errors !== '' && <p style={{ color: 'red'}}>{errors}</p> }
 
