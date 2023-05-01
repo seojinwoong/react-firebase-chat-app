@@ -200,6 +200,7 @@ await 뒤의 작업이 완료될때까지 기다린다.
 
 ![study_1](/study/study_14.png)
 - uploadTask의는 4개의 파라미터를 받는다.
+- progress의 state를 계속해서 받아야하기 때문에 해당 함수는 async, await으로 작성하지 않는다.
 
 1번째 parameter => 이벤트 리스너의 종류
 2번째 parameter => 이벤트가 진행중일 때 처리 함수
