@@ -12,7 +12,7 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Accordion from 'react-bootstrap/Accordion';
 
-const MessageHeader = () => {
+const MessageHeader = ({handleSearchChange}) => {
   return (
     <div
       style={{
@@ -33,6 +33,7 @@ const MessageHeader = () => {
                 <AiOutlineSearch />
               </InputGroup.Text>
               <Form.Control
+                onChange={handleSearchChange}
                 placeholder="Search Messages"
                 aria-label="Search"
                 aria-describedby="basic-addon1"
