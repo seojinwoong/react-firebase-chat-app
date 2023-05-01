@@ -5,7 +5,7 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import ProgressBar from 'react-bootstrap/ProgressBar';
 import { getDatabase, ref, set, push, child } from 'firebase/database';
-import { getStorage, ref as strRef, uploadBytesResumable } from 'firebase/storage';
+import { getStorage, ref as strRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 import { useSelector } from 'react-redux';
 
@@ -73,13 +73,14 @@ const MessageForm = () => {
   }
 
   const handleOpenImageRef = () => { inputOpenImgRef.current.click(); }
-  const handleUploadImage = async (e) => {
+  const handleUploadImage = (e) => {
     const file = e.target.files[0];
     const storage = getStorage();
 
     const filePath = `/message/public/${file.name}`;
     const metadata = { contentType: file.type };
 
+    setLoading(true);
     try {
       const storageRef = strRef(storage, filePath);
       const uploadTask = uploadBytesResumable(storageRef, file, metadata);
@@ -91,6 +92,10 @@ const MessageForm = () => {
         console.log(error.message);
       }, () => {
         alert('이미지 업로드가 완료되었습니다!');
+        getDownloadURL(uploadTask.snapshot.ref).then(downloadURL => {
+          set(push(child(messagesRef, chatRoom.id)), createMessage(downloadURL));
+          setLoading(false);
+        });
       });
     } catch (error) {
       console.log(error.message);
@@ -112,7 +117,7 @@ const MessageForm = () => {
       </Form>
 
       {
-        // !(percentage === 0 || percentage === 100) &&
+        !(percentage === 0 || percentage === 100) &&
         <ProgressBar now={percentage} label={`${percentage}%`} />
       }
       
@@ -120,10 +125,10 @@ const MessageForm = () => {
 
       <Row>
         <Col>
-          <button onClick={handleSubmuit} className="message-form-button" style={{ width: '100%' }}>SEND</button>
+          <button onClick={handleSubmuit} className="message-form-button" style={{ width: '100%' }} disabled={loading}>SEND</button>
         </Col>
         <Col>
-          <button onClick={handleOpenImageRef} className="message-form-button" style={{ width: '100%' }}>UPLOAD</button>
+          <button onClick={handleOpenImageRef} className="message-form-button" style={{ width: '100%' }} disabled={loading}>UPLOAD</button>
         </Col>
       </Row>
 

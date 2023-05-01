@@ -12,7 +12,7 @@ const Message = ({message, user}) => {
 
   return (
       <div style={{ display: 'flex', marginBottom: '5px', backgroundColor: isMineMessage(message.user.id, user.uid) && '#ececec' }}>
-        <img className="user_thumbnail" src={message.user.image} alt={message.user.name} style={{ width: '50px' }}/>
+        <img className="user_thumbnail" src={message.user.image} alt={message.user.name} style={{ width: '50px', height: '50px', borderRadius: '50%', outline: '1px solid #efefef', marginRight: '10px' }}/>
         <div className='user_chat_info'>
           <p className='user_name'>
             <span>{message.user.name}</span>
@@ -21,7 +21,7 @@ const Message = ({message, user}) => {
           <p className='user_chat_content'>
             {
               isImage(message)
-              ? <img src={message.user.image} />
+              ? <img src={message.image} />
               : <span>{message.content}</span>
             }
           </p>

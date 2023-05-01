@@ -12,7 +12,7 @@ body { background: #0e101c; font-family: -apple-system, BlinkMacSystemFont, "Seg
 .auth-wrapper label { line-height: 2; text-align: left; display: block; margin:5px 0; font-size: 14px; font-weight: 200; } 
 .auth-wrapper input[type="button"]:active,
 .auth-wrapper input[type="submit"]:active { transition: 0.3s all; transform: translateY(3px); border: 1px solid transparent; opacity: 0.8; } 
-.auth-wrapper input:disabled { opacity: 0.4; } 
+input:disabled { opacity: 0.4; } 
 .auth-wrapper input[type="button"]:hover { transition: 0.3s all; } 
 .auth-wrapper button[type="submit"],
 .auth-wrapper input[type="button"],
@@ -20,7 +20,7 @@ body { background: #0e101c; font-family: -apple-system, BlinkMacSystemFont, "Seg
 .auth-wrapper button[type="button"] { display: block; appearance: none; background: #333; color: white; border: none; text-transform: uppercase; padding: 10px 20px; border-radius: 4px; } 
 .auth-wrapper hr { margin-top: 30px; } 
 .auth-wrapper button { width: 100%; display: block; appearance: none; margin-top: 40px; border:none; margin-bottom: 20px; text-transform: uppercase; padding: 10px 20px; border-radius: 4px; background: #bf1650; color:#fff;} 
-.auth-wrapper button:disabled {background: grey; cursor: not-allowed;}
+button:disabled {background: grey; cursor: not-allowed;}
 
 .message-form-button {width: 100%; display: block; appearance: none; margin-top: 40px; border:none; margin-bottom: 20px; text-transform: uppercase; padding: 10px 20px; border-radius: 4px; background: #bf1650; color:#fff;}
 .message-form-button:hover {opacity:0.8;}
