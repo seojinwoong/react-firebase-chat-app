@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
-import { getDatabase, ref, push, update, child, onChildAdded } from 'firebase/database';
+import { getDatabase, ref, push, update, child, onChildAdded, onValue } from 'firebase/database';
 import { setCurrentChatRoom, setPrivateChatRoom } from '../../../redux/actions/chatRoom_action';
 import Badge from 'react-bootstrap/Badge';
 export class ChatRooms extends Component {
@@ -13,9 +13,11 @@ export class ChatRooms extends Component {
     name: "",
     description: "",
     chatRoomsRef: ref(getDatabase(), 'chatRooms'),
+    messagesRef: ref(getDatabase(), 'messages'),
     chatRooms: [],
     firstLoad: true,
     activeChatRoomId: "",
+    notifications: []
   }
 
   componentDidMount() {
@@ -38,8 +40,28 @@ export class ChatRooms extends Component {
         chatRoomsArray.push(DataSnapshot.val());
         this.setState({ chatRooms: chatRoomsArray }, () => {
           this.setFirstChatRoom();
+          this.addNotificationsListeners(DataSnapshot.key);
         });
     });
+  }
+  
+  addNotificationsListeners = (chatRoomId) => {
+    let { messagesRef } = this.state;
+    onValue(child(messagesRef, chatRoomId), DataSnapshot => { // <- messages테이블의 chatRoomId가 뭐뭐뭐인 message들을 긁어오기
+      if (this.props.chatRoom) {
+        this.handleNotification(
+          chatRoomId, // 채팅룸들의 아이디 각각
+          this.props.chatRoom.id, // 현재 보고있는 채팅방의 아이디
+          this.state.notifications, // notifications state, 메세지 관련 알람을 담을 배열
+          DataSnapshot // chatRoomId에 해당하는 방의 메세지들
+        )
+      }
+    })
+  }
+
+  handleNotification = (eachChatRoomId, currentChatRoomId, notifications, chatRoomMessages) => {
+
+    // 최종 목표는 notifications state 배열에 알림과 관련된 값들을 정리해서 넣는것!
   }
 
   isFormValid = (name, description) => name && description;
