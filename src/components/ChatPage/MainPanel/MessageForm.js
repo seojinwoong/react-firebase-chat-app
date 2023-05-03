@@ -14,6 +14,8 @@ let errorTimer;
 const MessageForm = () => {
   const user = useSelector(state => state.user_reducer.currentUser);
   const chatRoom = useSelector(state => state.chatRoom_reducer.currentChatRoom);
+  const isPrivateChatRoom = useSelector(state => state.chatRoom_reducer.isPrivateChatRoom);
+
   const [content, setContent] = useState('');
   const [errors, setErrors] = useState('');
   const [loading, setLoading] = useState(false);
@@ -73,11 +75,17 @@ const MessageForm = () => {
   }
 
   const handleOpenImageRef = () => { inputOpenImgRef.current.click(); }
+  
+  const getPath = () => {
+    if (isPrivateChatRoom) return `/message/private/${chatRoom.id}`
+    else return `/message/public`
+  }
+
   const handleUploadImage = (e) => {
     const file = e.target.files[0];
     const storage = getStorage();
 
-    const filePath = `/message/public/${file.name}`;
+    const filePath = `${getPath()}/${file.name}`;
     const metadata = { contentType: file.type };
 
     setLoading(true);
