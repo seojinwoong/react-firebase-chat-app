@@ -215,4 +215,14 @@ await 뒤의 작업이 완료될때까지 기다린다.
 g modifier : global 모든 해당사항을 찾는다. 매칭되는 첫번째만 찾지 않고 모두 찾는다.
 
 i modifier : insensitive 대소문자 구분을 하지 않고 해당사항을 찾는다.
+## 2023-05-03
+- firebase storage에서 message => private 에서 폴더가 두개가 생기는 이유
+![study_18](/study/study_18.png)
+1. Direct Message 중 A의 user.id
+2. Direct Message 중 B의 user.id
 
+Direct message의 채팅 id를 생성해줄때 내 user id와 상대방의 id를 결합해서 만들어줬었다.
+![study_19](/study/study_19.png)
+
+그렇게 만든 direct message 방의 id가 '/'이 들어가 있기 때문에
+firebase storage에 이중의 폴더구조가 생성된 것이다.
