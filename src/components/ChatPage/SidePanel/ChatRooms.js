@@ -5,7 +5,7 @@ import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
 import { getDatabase, ref, push, update, child, onChildAdded } from 'firebase/database';
-import { setCurrentChatRoom } from '../../../redux/actions/chatRoom_action';
+import { setCurrentChatRoom, setPrivateChatRoom } from '../../../redux/actions/chatRoom_action';
 export class ChatRooms extends Component {
   state = {
     modalShow: false,
@@ -84,6 +84,7 @@ export class ChatRooms extends Component {
 
   handleChangeChatRoom = (chatRoom) => {
     this.props.dispatch(setCurrentChatRoom(chatRoom));
+    this.props.dispatch(setPrivateChatRoom(false));
     this.setState({ activeChatRoomId: chatRoom.id });
   }
 
