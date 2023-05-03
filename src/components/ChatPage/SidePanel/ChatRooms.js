@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
 import { getDatabase, ref, push, update, child, onChildAdded } from 'firebase/database';
 import { setCurrentChatRoom, setPrivateChatRoom } from '../../../redux/actions/chatRoom_action';
+import Badge from 'react-bootstrap/Badge';
 export class ChatRooms extends Component {
   state = {
     modalShow: false,
@@ -93,9 +94,10 @@ export class ChatRooms extends Component {
     chatRooms.map(chatRoom => (
       <li key={chatRoom.id}
         onClick={() => this.handleChangeChatRoom(chatRoom)}
-        style={{ backgroundColor: chatRoom.id === this.state.activeChatRoomId && '#ffffff45' }}
+        style={{display: 'flex', justifyContent: 'space-between', backgroundColor: chatRoom.id === this.state.activeChatRoomId && '#ffffff45' }}
       >
         # {chatRoom.name}
+        <Badge style={{ float: 'right', marginTop: '4px' }} variant="danger">2</Badge>
       </li>
     ))
   
