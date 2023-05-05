@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { connect } from 'react-redux';
-import { getDatabase, ref, push, update, child, onChildAdded, onValue } from 'firebase/database';
+import { getDatabase, ref, push, update, child, onChildAdded, onValue, off } from 'firebase/database';
 import { setCurrentChatRoom, setPrivateChatRoom } from '../../../redux/actions/chatRoom_action';
 import Badge from 'react-bootstrap/Badge';
 export class ChatRooms extends Component {
@@ -22,6 +22,10 @@ export class ChatRooms extends Component {
 
   componentDidMount() {
     this.AddChatRoomsListener();
+  }
+
+  componentWillUnmount() {
+    off(this.state.chatRoomsRef);
   }
 
   setFirstChatRoom = () => {
@@ -60,8 +64,35 @@ export class ChatRooms extends Component {
   }
 
   handleNotification = (eachChatRoomId, currentChatRoomId, notifications, chatRoomMessages) => {
+    let lastTotal = 0;
+     
+    // 이미 notifications state 안에 알림 정보가 들어있는 채팅방과 그렇지 않은 채팅방을 나눠주기
+    let index = notifications.findIndex(notification => notification.id === eachChatRoomId);
 
+    // notifications state 안에 해당 채팅방의 알림정보가 없을 때
+    if (index === -1) {
+      notifications.push({
+        id: eachChatRoomId,
+        total: chatRoomMessages.size,
+        lastKnownTotal: chatRoomMessages.size,
+        count: 0
+      });
+    } else { // 이미 해당 채팅방의 알림정보가 있을 때
+      // 상대방이 채팅 보내는 그 해당 채팅방에 내가 있지 않을 때
+      if (eachChatRoomId !== currentChatRoomId) {
+        // 현재까지 유저가 확인한 총 메세지 갯수
+        lastTotal = notifications[index].lastKnownTotal;
+
+        // count 알림으로 보여줄 숫자 구하기
+        if (chatRoomMessages.size - lastTotal > 0) {
+          notifications[index].count = chatRoomMessages.size - lastTotal;
+        }
+      }
+      // total property에 현재 전체 메세지 갯수를 넣어주기
+      notifications[index].total = chatRoomMessages.size;
+    }
     // 최종 목표는 notifications state 배열에 알림과 관련된 값들을 정리해서 넣는것!
+    this.setState({ notifications });
   }
 
   isFormValid = (name, description) => name && description;
@@ -109,6 +140,30 @@ export class ChatRooms extends Component {
     this.props.dispatch(setCurrentChatRoom(chatRoom));
     this.props.dispatch(setPrivateChatRoom(false));
     this.setState({ activeChatRoomId: chatRoom.id });
+    this.clearNotification();
+  }
+
+  clearNotification = () => {
+    let index = this.state.notifications.findIndex(
+      notification => notification.id === this.props.chatRoom.id
+    )
+
+    if (index !== -1) {
+      let updatedNotifications = [...this.state.notifications];
+      updatedNotifications[index].count = 0;
+      updatedNotifications[index].lastKnownTotal = updatedNotifications[index].total;
+    }
+  }
+
+  getNotificationCount = (chatRoom) => {
+    let count = 0;
+    
+    this.state.notifications.forEach(notification => {
+      if (notification.id === chatRoom.id) {
+        count = notification.count;
+      }
+    });
+    if (count > 0) return count;
   }
 
   renderChatRooms = (chatRooms) => 
@@ -119,7 +174,9 @@ export class ChatRooms extends Component {
         style={{display: 'flex', justifyContent: 'space-between', backgroundColor: chatRoom.id === this.state.activeChatRoomId && '#ffffff45' }}
       >
         # {chatRoom.name}
-        <Badge style={{ float: 'right', marginTop: '4px' }} variant="danger">2</Badge>
+        <Badge style={{ float: 'right', marginTop: '4px' }} variant="danger">
+          {this.getNotificationCount(chatRoom)}
+        </Badge>
       </li>
     ))
   
