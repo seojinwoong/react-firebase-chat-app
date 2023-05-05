@@ -140,10 +140,10 @@ export class ChatRooms extends Component {
     this.props.dispatch(setCurrentChatRoom(chatRoom));
     this.props.dispatch(setPrivateChatRoom(false));
     this.setState({ activeChatRoomId: chatRoom.id });
-    this.clearNotification();
+    this.clearNotification(chatRoom.id);
   }
 
-  clearNotification = () => {
+  clearNotification = (chatRoomId) => {
     let index = this.state.notifications.findIndex(
       notification => notification.id === this.props.chatRoom.id
     )
@@ -152,6 +152,9 @@ export class ChatRooms extends Component {
       let updatedNotifications = [...this.state.notifications];
       updatedNotifications[index].count = 0;
       updatedNotifications[index].lastKnownTotal = updatedNotifications[index].total;
+      this.setState({ notifications: updatedNotifications }, () => {
+        document.querySelector(`li[data-chatroomid="${chatRoomId}"]`).click();
+      });
     }
   }
 
@@ -170,6 +173,7 @@ export class ChatRooms extends Component {
     chatRooms.length > 0 &&
     chatRooms.map(chatRoom => (
       <li key={chatRoom.id}
+        data-chatroomid={chatRoom.id}
         onClick={() => this.handleChangeChatRoom(chatRoom)}
         style={{display: 'flex', justifyContent: 'space-between', backgroundColor: chatRoom.id === this.state.activeChatRoomId && '#ffffff45' }}
       >
