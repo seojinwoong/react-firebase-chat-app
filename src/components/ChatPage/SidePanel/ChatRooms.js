@@ -26,6 +26,10 @@ export class ChatRooms extends Component {
 
   componentWillUnmount() {
     off(this.state.chatRoomsRef);
+    
+    this.state.chatRooms.forEach(chatRoom => {
+      off(child(this.state.messagesRef, chatRoom.id));
+    });
   }
 
   setFirstChatRoom = () => {
