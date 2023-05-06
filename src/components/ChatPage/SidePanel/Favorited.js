@@ -12,7 +12,8 @@ export class Favorited extends Component {
   state = {
     favoritedChatRooms: [],
     activeChatRoomId: "",
-    userRef: ref(getDatabase(), 'users')
+    userRef: ref(getDatabase(), 'users'),
+    firstLoad: true
   }
 
   componentDidMount() {
@@ -29,13 +30,20 @@ export class Favorited extends Component {
 
   addListeners = (userId) => {
     const { userRef } = this.state;
-
     let favoriteArr = [];
+    
     onChildAdded(child(userRef, `${userId}/favorited`), DataSnapshot => {
       favoriteArr.push({ id: DataSnapshot.key, ...DataSnapshot.val() });
       this.setState({
-        favoritedChatRooms: favoriteArr
+        favoritedChatRooms: favoriteArr,
+        firstLoad: false
       });
+
+      if (!this.state.firstLoad) {
+        this.setState({
+          favoritedChatRooms: [...this.state.favoritedChatRooms, { id: DataSnapshot.key, ...DataSnapshot.val() }],
+        });
+      }
     });
 
     onChildRemoved(child(userRef, `${userId}/favorited`), DataSnapshot => {
@@ -58,7 +66,7 @@ export class Favorited extends Component {
   }
 
   renderFavoritedChatRooms = favoritedChatRooms => 
-    favoritedChatRooms.length &&
+    favoritedChatRooms.length > 0 &&
     favoritedChatRooms.map(chatRoom => (
       <li key={chatRoom.id} onClick={() => this.changeChatRoom(chatRoom)}
         style={{ backgroundColor: chatRoom.id === this.state.activeChatRoomId && '#ffffff45' }}
