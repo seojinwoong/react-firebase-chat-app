@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -12,7 +12,7 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Accordion from 'react-bootstrap/Accordion';
 import { useSelector } from 'react-redux';
-import { getDatabase, ref, child, remove, update } from 'firebase/database';
+import { getDatabase, ref, child, remove, update, onValue } from 'firebase/database';
 
 const MessageHeader = ({handleSearchChange}) => {
   const chatRoom = useSelector(state => state.chatRoom_reducer.currentChatRoom);
@@ -20,6 +20,22 @@ const MessageHeader = ({handleSearchChange}) => {
   const user = useSelector(state => state.user_reducer.currentUser);
   const usersRef = ref(getDatabase(), 'users');
   const [isFavorited, setIsFavorited] = useState(false);
+
+  useEffect(() => {
+    if (chatRoom && user) {
+      addFavoriteListener(chatRoom.id, user.uid);
+    }
+  }, []);
+
+  const addFavoriteListener = (chatRoomId, userId) => {
+    onValue(child(usersRef, `${userId}/favorited`), data => {
+      if (data.val() !== null) {
+        const chatRoomIds = Object.keys(data.val());
+        const isAlreadyFavorited = chatRoomIds.includes(chatRoomId);
+        setIsFavorited(isAlreadyFavorited);
+      }
+    });
+  }
 
   const handleFavorite = () => {
     if (isFavorited) {
