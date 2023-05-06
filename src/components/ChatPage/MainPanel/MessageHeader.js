@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { FaLock, FaLockOpen } from 'react-icons/fa';
-import { MdFavorite } from 'react-icons/md';
+import { MdFavorite, MdFavoriteBorder } from 'react-icons/md';
 import { AiOutlineSearch } from 'react-icons/ai';
 import Image from 'react-bootstrap/Image';
 import Form from 'react-bootstrap/Form';
@@ -12,10 +12,33 @@ import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Accordion from 'react-bootstrap/Accordion';
 import { useSelector } from 'react-redux';
+import { getDatabase, ref, child, remove, update } from 'firebase/database';
 
 const MessageHeader = ({handleSearchChange}) => {
   const chatRoom = useSelector(state => state.chatRoom_reducer.currentChatRoom);
   const isPrivateChatRoom = useSelector(state => state.chatRoom_reducer.isPrivateChatRoom);
+  const user = useSelector(state => state.user_reducer.currentUser);
+  const usersRef = ref(getDatabase(), 'users');
+  const [isFavorited, setIsFavorited] = useState(false);
+
+  const handleFavorite = () => {
+    if (isFavorited) {
+      setIsFavorited(prev => !prev);
+      remove(child(usersRef, `${user.uid}/favorited/${chatRoom.id}`));
+    } else {
+      setIsFavorited(prev => !prev);
+      update(child(usersRef, `${user.uid}/favorited`), {
+        [chatRoom.id]: {
+          name: chatRoom.name,
+          description: chatRoom.description,
+          createdBy: {
+            name: chatRoom.createdBy.name,
+            image: chatRoom.createdBy.image,
+          }
+        }
+      })
+    }
+  }
 
   return (
     <div
@@ -30,7 +53,15 @@ const MessageHeader = ({handleSearchChange}) => {
     >
       <Container>
         <Row>
-          <Col><h2>{ isPrivateChatRoom ? <FaLock style={{ marginBottom: '10px' }}/> : <FaLockOpen style={{ marginBottom: '10px' }}/>} {chatRoom && chatRoom.name} <MdFavorite /></h2></Col>
+          <Col><h2>{ isPrivateChatRoom ? <FaLock style={{ marginBottom: '10px' }}/> : <FaLockOpen style={{ marginBottom: '10px' }}/>} {chatRoom && chatRoom.name} 
+          <span onClick={handleFavorite}>
+          {
+            isFavorited
+            ? <MdFavorite style={{ marginBottom: '10px' }}/>
+            : <MdFavoriteBorder style={{ marginBottom: '10px' }}/>
+          }
+          </span>
+          </h2></Col>
           <Col>
             <InputGroup className="mb-3">
               <InputGroup.Text id="basic-addon1">
