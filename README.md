@@ -226,3 +226,15 @@ Direct message의 채팅 id를 생성해줄때 내 user id와 상대방의 id를
 
 그렇게 만든 direct message 방의 id가 '/'이 들어가 있기 때문에
 firebase storage에 이중의 폴더구조가 생성된 것이다.
+
+## 2023-05-06
+- javascript Object.keys란 무엇인가
+Object.keys() 메서드는 객체의 키값들만 추출해서 배열로 리턴하는 문법이다.
+
+![study_20](/study/study_20.png)
+
+- includes란? 배열에 쓸수 있는 메서드로써, 배열 중 인자에 해당하는 값이 있다면 true, 없다면 false를 반환한다.
+![study_21](/study/study_21.png)
+
+
+
