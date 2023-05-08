@@ -107,12 +107,14 @@ const MessageHeader = ({handleSearchChange}) => {
           </Col>
         </Row>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <p>
-            <Image src={chatRoom && chatRoom.createdBy.image} style={{ width: '30px', height: '30px', borderRadius: '50%' }}/>{" "}
-            {chatRoom && chatRoom.createdBy.name} 
-          </p>
-        </div>
+        {!isPrivateChatRoom &&
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <p>
+              <Image src={chatRoom && chatRoom.createdBy.image} style={{ width: '30px', height: '30px', borderRadius: '50%' }}/>{" "}
+              {chatRoom && chatRoom.createdBy.name} 
+            </p>
+          </div>
+        }
 
         <Row>
           <Col>

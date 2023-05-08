@@ -4,7 +4,7 @@ import Col from 'react-bootstrap/Col';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 import ProgressBar from 'react-bootstrap/ProgressBar';
-import { getDatabase, ref, set, push, child } from 'firebase/database';
+import { getDatabase, ref, set, push, child, remove } from 'firebase/database';
 import { getStorage, ref as strRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 import { useSelector } from 'react-redux';
@@ -21,6 +21,7 @@ const MessageForm = () => {
   const [loading, setLoading] = useState(false);
   const [percentage, setPercentage] = useState(0);
   const messagesRef = ref(getDatabase(), 'messages');
+  const typingRef = ref(getDatabase(), 'typing');
   const inputOpenImgRef = useRef();
 
   const createMessage = (fileUrl = null) => {
@@ -42,7 +43,7 @@ const MessageForm = () => {
     return message;
   }
 
-  const handleSubmuit = async () => {
+  const handleSubmit = async () => {
     if (!content) {
       setErrors('메세지를 입력해주세요!');
       if (errorTimer) clearTimeout(errorTimer);
@@ -56,6 +57,8 @@ const MessageForm = () => {
 
     try {
       await set(push(child(messagesRef, chatRoom.id)), createMessage());
+
+      await remove(child(typingRef, `${chatRoom.id}/${user.uid}`));
 
       setLoading(false);
       setContent("");
@@ -110,11 +113,26 @@ const MessageForm = () => {
     }
   }
 
+  const handleKeyDown = e => {
+    if (e.ctrlKey && e.keyCode === 13) {
+      handleSubmit();
+    }
+
+    if (content) {
+      set(ref(getDatabase(), `typing/${chatRoom.id}/${user.uid}`), {
+        userName: user.displayName
+      })
+    } else {
+      remove(ref(getDatabase(), `typing/${chatRoom.id}/${user.uid}`));
+    }
+  }
+
   return (
     <div>
-      <Form onSubmit={handleSubmuit}>
+      <Form onSubmit={handleSubmit}>
         <FloatingLabel controlId="floatingTextarea2" label="Comments">
           <Form.Control
+            onKeyDown={handleKeyDown}
             value={content}
             onChange={handleChangeMessage}
             as="textarea"
@@ -133,7 +151,7 @@ const MessageForm = () => {
 
       <Row>
         <Col>
-          <button onClick={handleSubmuit} className="message-form-button" style={{ width: '100%' }} disabled={loading}>SEND</button>
+          <button onClick={handleSubmit} className="message-form-button" style={{ width: '100%' }} disabled={loading}>SEND</button>
         </Col>
         <Col>
           <button onClick={handleOpenImageRef} className="message-form-button" style={{ width: '100%' }} disabled={loading}>UPLOAD</button>
