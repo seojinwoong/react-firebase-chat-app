@@ -3,7 +3,7 @@ import MessageHeader from './MessageHeader';
 import Message from './Message';
 import MessageForm from './MessageForm';
 import { connect } from 'react-redux';
-import { getDatabase, ref, onChildAdded, onChildRemoved, child, DataSnapshot } from 'firebase/database';
+import { getDatabase, ref, onChildAdded, onChildRemoved, child, off } from 'firebase/database';
 import { setUserPosts } from '../../../redux/actions/chatRoom_action';
 export class MainPanel extends Component {
   state = {
@@ -14,7 +14,8 @@ export class MainPanel extends Component {
     searchResults: [],
     searchLoading: false,
     typingRef: ref(getDatabase(), 'typing'),
-    typingUsers: []
+    typingUsers: [],
+    listenerLists: []
   }
 
   componentDidMount() {
@@ -24,6 +25,17 @@ export class MainPanel extends Component {
       this.addMessagesListeners(chatRoom.id);
       this.addTypingListeners(chatRoom.id);
     }
+  }
+
+  componentWillUnmount() {
+    off(this.state.messagesRef);
+    this.removeListeners(this.state.listenerLists);
+  }
+
+  removeListeners = (listeners) => {
+    listeners.forEach(listener => {
+      off(child(this.state.typingRef, listener.id), listener.event);
+    })
   }
 
   addTypingListeners = (chatRoomId) => {
@@ -41,6 +53,8 @@ export class MainPanel extends Component {
       }
     });
 
+    this.addToListenerLists(chatRoomId, this.state.typingRef, 'child_added');
+    
     onChildRemoved(child(typingRef, chatRoomId), DataSnapshot => {
       const index = typingUsers.findIndex(user => user.id === DataSnapshot.key);
       if (index !== -1) {
@@ -48,6 +62,25 @@ export class MainPanel extends Component {
         this.setState({ typingUsers });
       }
     });
+
+    this.addToListenerLists(chatRoomId, this.state.typingRef, 'child_removed');
+  }
+
+  addToListenerLists = (id, ref, event) => {
+    const index = this.state.listenerLists.findIndex(listener => {
+      return (
+        listener.id === id &&
+        listener.ref === ref &&
+        listener.event === event
+      )
+    });
+
+    if (index === -1) {
+      const newListener = {id, ref, event};
+      this.setState({
+        listenerLists: this.state.listenerLists.concat(newListener)
+      })
+    }
   }
 
   handleSearchMessages = () => {

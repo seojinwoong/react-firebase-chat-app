@@ -157,7 +157,7 @@ export class ChatRooms extends Component {
       updatedNotifications[index].count = 0;
       updatedNotifications[index].lastKnownTotal = updatedNotifications[index].total;
       this.setState({ notifications: updatedNotifications }, () => {
-        document.querySelector(`li[data-chatroomid="${chatRoomId}"]`).click();
+        document.querySelector(`[data-chatroomid="${chatRoomId}"]`).remove();
       });
     }
   }
@@ -177,12 +177,11 @@ export class ChatRooms extends Component {
     chatRooms.length > 0 &&
     chatRooms.map(chatRoom => (
       <li key={chatRoom.id}
-        data-chatroomid={chatRoom.id}
         onClick={() => this.handleChangeChatRoom(chatRoom)}
         style={{display: 'flex', justifyContent: 'space-between', backgroundColor: chatRoom.id === this.state.activeChatRoomId && '#ffffff45' }}
       >
         # {chatRoom.name}
-        <Badge style={{ float: 'right', marginTop: '4px' }} variant="danger">
+        <Badge style={{ float: 'right', marginTop: '4px' }} variant="danger" data-chatroomid={chatRoom.id}>
           {this.getNotificationCount(chatRoom)}
         </Badge>
       </li>
