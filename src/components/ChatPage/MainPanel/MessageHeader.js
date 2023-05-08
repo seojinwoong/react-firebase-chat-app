@@ -95,7 +95,8 @@ const MessageHeader = ({handleSearchChange}) => {
 
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <p>
-            <Image src=""/>{" "} user name
+            <Image src={chatRoom && chatRoom.createdBy.image} style={{ width: '30px', height: '30px', borderRadius: '50%' }}/>{" "}
+            {chatRoom && chatRoom.createdBy.name} 
           </p>
         </div>
 
@@ -103,15 +104,9 @@ const MessageHeader = ({handleSearchChange}) => {
           <Col>
             <Accordion>
               <Accordion.Item eventKey="0"> 
-                <Accordion.Header style={{ display: 'flex', height: '40px' }}>Accordion Item #1</Accordion.Header>
+                <Accordion.Header style={{ display: 'flex', height: '40px' }}>description</Accordion.Header>
                 <Accordion.Body>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-                  minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                  aliquip ex ea commodo consequat. Duis aute irure dolor in
-                  reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                  pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                  culpa qui officia deserunt mollit anim id est laborum.
+                  {chatRoom && chatRoom.description}
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>

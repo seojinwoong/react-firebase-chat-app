@@ -33,13 +33,13 @@ export class Favorited extends Component {
     let favoriteArr = [];
     
     onChildAdded(child(userRef, `${userId}/favorited`), DataSnapshot => {
-      favoriteArr.push({ id: DataSnapshot.key, ...DataSnapshot.val() });
-      this.setState({
-        favoritedChatRooms: favoriteArr,
-        firstLoad: false
-      });
-
-      if (!this.state.firstLoad) {
+      if (this.state.firstLoad) {
+        favoriteArr.push({ id: DataSnapshot.key, ...DataSnapshot.val() });
+        this.setState({
+          favoritedChatRooms: favoriteArr,
+          firstLoad: false
+        });
+      } else {
         this.setState({
           favoritedChatRooms: [...this.state.favoritedChatRooms, { id: DataSnapshot.key, ...DataSnapshot.val() }],
         });
