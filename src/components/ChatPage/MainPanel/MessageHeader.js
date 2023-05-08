@@ -17,6 +17,7 @@ import { getDatabase, ref, child, remove, update, onValue } from 'firebase/datab
 const MessageHeader = ({handleSearchChange}) => {
   const chatRoom = useSelector(state => state.chatRoom_reducer.currentChatRoom);
   const isPrivateChatRoom = useSelector(state => state.chatRoom_reducer.isPrivateChatRoom);
+  const userPosts = useSelector(state => state.chatRoom_reducer.userPosts);
   const user = useSelector(state => state.user_reducer.currentUser);
   const usersRef = ref(getDatabase(), 'users');
   const [isFavorited, setIsFavorited] = useState(false);
@@ -55,6 +56,19 @@ const MessageHeader = ({handleSearchChange}) => {
       })
     }
   }
+
+  const renderUserPosts = (userPosts) =>
+    Object.entries(userPosts)
+      .sort((a, b) => b[1].count - a[1].count)
+      .map(([key, value], i) => (
+        <div style={{ display: 'flex' }}>
+          <img src={value.image} alt={key} style={{ width: '30px', height: '30px', borderRadius: '50%' }} title={key} className='mr-3'/>
+          <div>
+            <p>{key}</p>
+            <p>{value.count} 개</p>
+          </div>
+        </div>  
+      ))
 
   return (
     <div
@@ -114,15 +128,9 @@ const MessageHeader = ({handleSearchChange}) => {
           <Col>
             <Accordion>
               <Accordion.Item eventKey="1"> 
-                <Accordion.Header style={{ display: 'flex', height: '40px' }}>Accordion Item #1</Accordion.Header>
+                <Accordion.Header style={{ display: 'flex', height: '40px' }}>user posts</Accordion.Header>
                 <Accordion.Body>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-                  minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-                  aliquip ex ea commodo consequat. Duis aute irure dolor in
-                  reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-                  pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                  culpa qui officia deserunt mollit anim id est laborum.
+                  {userPosts && renderUserPosts(userPosts)}
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>
