@@ -157,7 +157,7 @@ export class ChatRooms extends Component {
       updatedNotifications[index].count = 0;
       updatedNotifications[index].lastKnownTotal = updatedNotifications[index].total;
       this.setState({ notifications: updatedNotifications }, () => {
-        document.querySelector(`[data-chatroomid="${chatRoomId}"]`).remove();
+        document.querySelector(`[data-chatroomid="${chatRoomId}"]`).style.display = 'none';
       });
     }
   }
